@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
       - name: Get Python 3
         uses: actions/setup-python@v5
         with:
@@ -39,5 +39,6 @@ jobs:
           git diff
           git config --global user.email "actions@mochapulse.github.io"
           git config --global user.name "mochapulse-bot"
+          git pull --rebase --autostash origin main
           git commit -m "Updated README" -a || echo "No changes to commit"
           git push
