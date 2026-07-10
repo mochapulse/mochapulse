@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     font-family="ConsolasFallback,Consolas,monospace"
+     width="1160px" height="940px" font-size="16px">
+<style>
+  @font-face {
+    src: local('Consolas'), local('Consolas Bold');
+    font-family: 'ConsolasFallback';
+    font-display: swap;
+    -webkit-size-adjust: 109%;
+    size-adjust: 109%;
+  }
+  .key { fill: #953800; }
+  .value { fill: #0a3069; }
+  .cc { fill: #c0c8d4; }
+  text, tspan { white-space: pre; }
+</style>
+<rect width="1160px" height="940px" fill="#f6f8fa" rx="15"/>
+<text fill="#24292f" font-size="12px">
+      <tspan x="20" y="40" xml:space="preserve">.           .   .          .     .</tspan>
+      <tspan x="20" y="60" xml:space="preserve">                      ..</tspan>
+      <tspan x="20" y="80" xml:space="preserve">   .             .    .                        .                    .      .  .</tspan>
+      <tspan x="20" y="100" xml:space="preserve">     .            .           .                 .       .</tspan>
+      <tspan x="20" y="120" xml:space="preserve">              .        .  .          . .       .        .                    .</tspan>
+      <tspan x="20" y="140" xml:space="preserve">              .       .   .  .           .                            .  .  .</tspan>
+      <tspan x="20" y="160" xml:space="preserve">             .            .</tspan>
+      <tspan x="20" y="180" xml:space="preserve">                      .   .              . .       .  .      .</tspan>
+      <tspan x="20" y="200" xml:space="preserve">              . :*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*:               .</tspan>
+      <tspan x="20" y="220" xml:space="preserve">              .%@@@%########################################%@@@%</tspan>
+      <tspan x="20" y="240" xml:space="preserve">    .         -@@@  .                    .                 .. @@@-          . .</tspan>
+      <tspan x="20" y="260" xml:space="preserve">      .       +@@+.  ..      . .          .                   +@@+. .    .</tspan>
+      <tspan x="20" y="280" xml:space="preserve">   .       .  +@@+              ..   .      ..                +@@+             .</tspan>
+      <tspan x="20" y="300" xml:space="preserve">              +@@+                     ==          .   .      +@@+ .</tspan>
+      <tspan x="20" y="320" xml:space="preserve">     .   .    +@@+   .        .*%@@#   **   #@@%*..        .  +@@+           .</tspan>
+      <tspan x="20" y="340" xml:space="preserve">      .       +@@+          :@@@@@@@   ** . @@@@@@@.  .       +@@+    .  .     .</tspan>
+      <tspan x="20" y="360" xml:space="preserve">              +@@+    .    .@@@@@@*=   **   =#@@@@@@          +@@+       . .</tspan>
+      <tspan x="20" y="380" xml:space="preserve">  .           +@@+         @@@@@.      **      .@@@@@ .       +@@+    .  .  .</tspan>
+      <tspan x="20" y="400" xml:space="preserve">      .       +@@+        =@@@@:       *******+ -@@@@=        +@@+           .</tspan>
+      <tspan x="20" y="420" xml:space="preserve">       .      +@@+  .     @@@@@        ......**  @@@@@       .+@@+             .</tspan>
+      <tspan x="20" y="440" xml:space="preserve">         .   .+@@+        @@@@+              **  +@@@@        +@@+      .     .</tspan>
+      <tspan x="20" y="460" xml:space="preserve">              +@@+. .    .@@@@-        .     **  -@@@@..      +@@+          .</tspan>
+      <tspan x="20" y="480" xml:space="preserve">              +@@+       .@@@@-              **  -@@@@.       +@@+   .  ..</tspan>
+      <tspan x="20" y="500" xml:space="preserve">              +@@+        @@@@+            . **  *@@@@ . .    +@@+</tspan>
+      <tspan x="20" y="520" xml:space="preserve">       .     .+@@+ .     .@@@@@   ...........**. @@@@@      . +@@+</tspan>
+      <tspan x="20" y="540" xml:space="preserve">       ..     +@@+     .  *@@@@- *************+ -@@@@+        +@@+            .</tspan>
+      <tspan x="20" y="560" xml:space="preserve">              +@@+    .    @@@@@:**      .     .@@@@@         +@@+        .</tspan>
+      <tspan x="20" y="580" xml:space="preserve">              +@@+  . .     @@@@@**=       .=*@@@@@@          +@@+       .</tspan>
+      <tspan x="20" y="600" xml:space="preserve">              +@@+         . @@@@**@.  .    @@@@@@%   .       +@@+ .</tspan>
+      <tspan x="20" y="620" xml:space="preserve">  .        .  +@@+            .*%**+   .    =@@%*.            +@@+.</tspan>
+      <tspan x="20" y="640" xml:space="preserve">           .  +@@+    .         +**+                         .+@@+            .</tspan>
+      <tspan x="20" y="660" xml:space="preserve">          ..  +@@+   .          .++.      ..                  +@@+    .</tspan>
+      <tspan x="20" y="680" xml:space="preserve">         .    +@@+    .       .                               +@@+</tspan>
+      <tspan x="20" y="700" xml:space="preserve">              -@@@                       .           .        @@@- .  ..   .</tspan>
+      <tspan x="20" y="720" xml:space="preserve">            .  %@@@%########################################%@@@%</tspan>
+      <tspan x="20" y="740" xml:space="preserve">                -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-            . .</tspan>
+      <tspan x="20" y="760" xml:space="preserve">         .         .              .                     .  .</tspan>
+      <tspan x="20" y="780" xml:space="preserve">          .                  .         .                              .    ..</tspan>
+      <tspan x="20" y="800" xml:space="preserve">           .   . .    .                    .  .              .  .        .</tspan>
+      <tspan x="20" y="820" xml:space="preserve">                                           ..           .                      .</tspan>
+      <tspan x="20" y="840" xml:space="preserve">  .  .</tspan>
+      <tspan x="20" y="860" xml:space="preserve">        .    .               .   .                         .      .            .</tspan>
+      <tspan x="20" y="880" xml:space="preserve">                                                     .  .  .  .</tspan>
+      <tspan x="20" y="900" xml:space="preserve"> .    .      .                 .     .                                   .</tspan>
+</text>
+<text fill="#24292f">
+      <tspan x="740" y="40"><tspan class="key">OS</tspan><tspan class="cc">.... </tspan><tspan class="value">Arch Linux, Ubuntu, macOS</tspan></tspan>
+      <tspan x="740" y="68"><tspan class="key">Shell</tspan><tspan class="cc">.... </tspan><tspan class="value">zsh + starship</tspan></tspan>
+      <tspan x="740" y="96"><tspan class="key">Terminal</tspan><tspan class="cc">.... </tspan><tspan class="value">kitty + tmux</tspan></tspan>
+      <tspan x="740" y="124"><tspan class="key">Editor</tspan><tspan class="cc">.... </tspan><tspan class="value">Neovim, VSCode</tspan></tspan>
+      <tspan x="740" y="152"><tspan class="key">Languages</tspan><tspan class="cc">.... </tspan><tspan class="value">Python, Rust, Go, TypeScript</tspan></tspan>
+      <tspan x="740" y="180"><tspan class="key">CI/CD</tspan><tspan class="cc">.... </tspan><tspan class="value">GitHub Actions, Docker</tspan></tspan>
+      <tspan x="740" y="208"><tspan class="key">Tools</tspan><tspan class="cc">.... </tspan><tspan class="value">git, chafa, imagemagick, ffmpeg</tspan></tspan>
+      <tspan x="740" y="236"> </tspan>
+      <tspan x="740" y="264"> </tspan>
+      <tspan x="740" y="292">- Repository ————————————————————————————————————————</tspan>
+      <tspan x="740" y="320"><tspan class="key">mochapulse</tspan><tspan class="cc">.... </tspan><tspan class="value">GitHub profile README</tspan></tspan>
+      <tspan x="740" y="348"><tspan class="key">as‑a‑service</tspan><tspan class="cc">.... </tspan><tspan class="value">Mocha as a service</tspan></tspan>
+      <tspan x="740" y="376"> </tspan>
+      <tspan x="740" y="404">- Contact ————————————————————————————————————————</tspan>
+      <tspan x="740" y="432"><tspan class="key">GitHub</tspan><tspan class="cc">.... </tspan><tspan class="value">github.com/mochapulse</tspan></tspan>
+</text>
+</svg>

@@ -1,0 +1,13 @@
+This line is a comment block.
+This line is a comment block.
+This line is a comment block.
+This line is a comment block.
+This line is a comment block.
+This line is a comment block.
+This line is a comment block.
+# --- repository cache data ---
+# format: sha256_name total_commits my_commits additions deletions
+# Add archived/deleted repos below:
+# --- end cache ---
+# total_extra_commits: 0
+# --- cached on: 2025-01-01
