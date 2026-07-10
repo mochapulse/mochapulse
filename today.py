@@ -10,8 +10,10 @@ from lxml import etree
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ASCII_FILE = os.path.join(SCRIPT_DIR, "mochapulse-ascii-art.txt")
 
-HEADERS = {'authorization': 'token ' + os.environ['ACCESS_TOKEN']}
-USER_NAME = os.environ['USER_NAME']
+ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN', '')
+USER_NAME = os.environ.get('USER_NAME', 'mochapulse')
+HEADERS = {'authorization': 'token ' + ACCESS_TOKEN} if ACCESS_TOKEN else {}
+HAS_TOKEN = bool(ACCESS_TOKEN)
 BIRTHDAY = datetime.datetime(2001, 6, 28)
 QUERY_COUNT = {'user_getter': 0, 'follower_getter': 0, 'graph_repos_stars': 0,
                'recursive_loc': 0, 'loc_query': 0}
@@ -580,49 +582,69 @@ def main():
     age_data, age_time = perf_counter(daily_readme, BIRTHDAY)
     formatter('age calculation', age_time)
 
-    user_data, user_time = perf_counter(user_getter, USER_NAME)
-    OWNER_ID, acc_date = user_data
-    formatter('account data', user_time)
+    if not HAS_TOKEN:
+        print('\n** No ACCESS_TOKEN configured. Skipping GitHub API queries. **')
+        print('** Set ACCESS_TOKEN and USER_NAME secrets in repo settings. **\n')
+        svg_overwrite(os.path.join(SCRIPT_DIR, 'dark_mode.svg'),
+                      age_data, 0, 0, 0, 0, 0, [0, 0, 0])
+        svg_overwrite(os.path.join(SCRIPT_DIR, 'light_mode.svg'),
+                      age_data, 0, 0, 0, 0, 0, [0, 0, 0])
+        return
 
-    total_loc, loc_time = perf_counter(
-        loc_query, ['OWNER', 'COLLABORATOR', 'ORGANIZATION_MEMBER'], 7)
-    if total_loc[-1]:
-        formatter('LOC (cached)', loc_time)
-    else:
-        formatter('LOC (no cache)', loc_time)
+    try:
+        user_data, user_time = perf_counter(user_getter, USER_NAME)
+        OWNER_ID, acc_date = user_data
+        formatter('account data', user_time)
 
-    commit_data, commit_time = perf_counter(commit_counter, 7)
-    formatter('commits', commit_time)
+        total_loc, loc_time = perf_counter(
+            loc_query, ['OWNER', 'COLLABORATOR', 'ORGANIZATION_MEMBER'], 7)
+        if total_loc[-1]:
+            formatter('LOC (cached)', loc_time)
+        else:
+            formatter('LOC (no cache)', loc_time)
 
-    star_data, star_time = perf_counter(graph_repos_stars, 'stars', ['OWNER'])
-    formatter('stars', star_time)
+        commit_data, commit_time = perf_counter(commit_counter, 7)
+        formatter('commits', commit_time)
 
-    repo_data, repo_time = perf_counter(graph_repos_stars, 'repos', ['OWNER'])
-    formatter('repos', repo_time)
+        star_data, star_time = perf_counter(
+            graph_repos_stars, 'stars', ['OWNER'])
+        formatter('stars', star_time)
 
-    contrib_data, contrib_time = perf_counter(
-        graph_repos_stars, 'repos',
-        ['OWNER', 'COLLABORATOR', 'ORGANIZATION_MEMBER'])
-    formatter('contributed repos', contrib_time)
+        repo_data, repo_time = perf_counter(
+            graph_repos_stars, 'repos', ['OWNER'])
+        formatter('repos', repo_time)
 
-    follower_data, follower_time = perf_counter(follower_getter, USER_NAME)
-    formatter('followers', follower_time)
+        contrib_data, contrib_time = perf_counter(
+            graph_repos_stars, 'repos',
+            ['OWNER', 'COLLABORATOR', 'ORGANIZATION_MEMBER'])
+        formatter('contributed repos', contrib_time)
 
-    for index in range(len(total_loc) - 1):
-        total_loc[index] = '{:,}'.format(total_loc[index])
+        follower_data, follower_time = perf_counter(
+            follower_getter, USER_NAME)
+        formatter('followers', follower_time)
 
-    svg_overwrite(os.path.join(SCRIPT_DIR, 'dark_mode.svg'),
-                  age_data, commit_data, star_data, repo_data,
-                  contrib_data, follower_data, total_loc[:-1])
-    svg_overwrite(os.path.join(SCRIPT_DIR, 'light_mode.svg'),
-                  age_data, commit_data, star_data, repo_data,
-                  contrib_data, follower_data, total_loc[:-1])
+        for index in range(len(total_loc) - 1):
+            total_loc[index] = '{:,}'.format(total_loc[index])
 
-    print('Total GitHub GraphQL API calls:',
-          '{:>3}'.format(sum(QUERY_COUNT.values())))
-    for funct_name, count in QUERY_COUNT.items():
-        print('{:<28}'.format('   ' + funct_name + ':'),
-              '{:>6}'.format(count))
+        svg_overwrite(os.path.join(SCRIPT_DIR, 'dark_mode.svg'),
+                      age_data, commit_data, star_data, repo_data,
+                      contrib_data, follower_data, total_loc[:-1])
+        svg_overwrite(os.path.join(SCRIPT_DIR, 'light_mode.svg'),
+                      age_data, commit_data, star_data, repo_data,
+                      contrib_data, follower_data, total_loc[:-1])
+
+        print('Total GitHub GraphQL API calls:',
+              '{:>3}'.format(sum(QUERY_COUNT.values())))
+        for funct_name, count in QUERY_COUNT.items():
+            print('{:<28}'.format('   ' + funct_name + ':'),
+                  '{:>6}'.format(count))
+    except Exception as e:
+        print(f'\n** GitHub API error: {e} **')
+        print('** SVG generated with placeholder stats. **\n')
+        svg_overwrite(os.path.join(SCRIPT_DIR, 'dark_mode.svg'),
+                      age_data, 0, 0, 0, 0, 0, [0, 0, 0])
+        svg_overwrite(os.path.join(SCRIPT_DIR, 'light_mode.svg'),
+                      age_data, 0, 0, 0, 0, 0, [0, 0, 0])
 
 
 if __name__ == '__main__':
