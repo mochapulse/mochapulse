@@ -405,8 +405,17 @@ def _build_svg(ascii_lines, bg, fg, key_color, value_color, neutral_color,
     art_y_start = 40
     art_line_height = 20
     art_font_size = 12
+    art_x_padding = 20
 
-    info_x = 740
+    max_art_chars = max((len(line.rstrip()) for line in ascii_lines), default=0)
+    char_width_ratio = 0.6
+    art_pixel_width = int(max_art_chars * art_font_size * char_width_ratio)
+    min_info_x = 740
+    art_right_edge = art_x_padding + art_pixel_width
+    info_x = max(min_info_x, art_right_edge + 60)
+    info_content_width = 420
+    svg_width = max(SVG_WIDTH, info_x + info_content_width)
+
     info_y_start = 40
     info_line_height = 28
     info_font_size = 16
@@ -419,10 +428,10 @@ def _build_svg(ascii_lines, bg, fg, key_color, value_color, neutral_color,
         y = art_y_start + i * art_line_height
         if rline:
             tspans_art.append(
-                f'      <tspan x="20" y="{y}"'
+                f'      <tspan x="{art_x_padding}" y="{y}"'
                 f' xml:space="preserve">{rline}</tspan>')
         else:
-            tspans_art.append(f'      <tspan x="20" y="{y}"> </tspan>')
+            tspans_art.append(f'      <tspan x="{art_x_padding}" y="{y}"> </tspan>')
 
     info_entries = [
         ("title", "mochapulse@github", ""),
@@ -531,7 +540,7 @@ def _build_svg(ascii_lines, bg, fg, key_color, value_color, neutral_color,
         f"<?xml version='1.0' encoding='UTF-8'?>\n"
         f'<svg xmlns="http://www.w3.org/2000/svg"\n'
         f'     font-family="ConsolasFallback,Consolas,monospace"\n'
-        f'     width="{SVG_WIDTH}px" height="{svg_height}px"'
+        f'     width="{svg_width}px" height="{svg_height}px"'
         f' font-size="{info_font_size}px">\n'
         f'<style>\n'
         f'  @font-face {{\n'
@@ -548,7 +557,7 @@ def _build_svg(ascii_lines, bg, fg, key_color, value_color, neutral_color,
         f'  .delColor {{ fill: {del_color}; }}\n'
         f'  text, tspan {{ white-space: pre; }}\n'
         f'</style>\n'
-        f'<rect width="{SVG_WIDTH}px" height="{svg_height}px"'
+        f'<rect width="{svg_width}px" height="{svg_height}px"'
         f' fill="{bg}" rx="15"/>\n'
         f'<text fill="{fg}" font-size="{art_font_size}px">\n'
         f'{chr(10).join(tspans_art)}\n'
