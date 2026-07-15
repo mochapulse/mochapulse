@@ -1,3 +1,14 @@
+"""Generate dark and light SVG profile cards from GitHub GraphQL data.
+
+Queries the GitHub GraphQL API for repository stats, stars, commits,
+followers, and lines of code contributed, then writes updated values into
+``dark_mode.svg`` and ``light_mode.svg``. When ``ACCESS_TOKEN`` is not set,
+SVGs are generated with placeholder zeros and no API calls are made.
+
+Environment variables:
+    ACCESS_TOKEN (str): GitHub personal access token for GraphQL API.
+    USER_NAME (str): GitHub username to query (default: ``mochapulse``).
+"""
 import datetime
 from dateutil import relativedelta
 import hashlib
@@ -38,6 +49,12 @@ LIGHT_DEL = "#cf222e"
 
 
 def daily_readme(birthday):
+    """Return an age string with years, months, and days since *birthday*.
+
+    :param datetime.datetime birthday: Birth date.
+    :return: Human-readable age string (e.g. ``"24 years, 3 months, 14 days"``).
+    :rtype: str
+    """
     diff = relativedelta.relativedelta(datetime.datetime.today(), birthday)
     return '{} {}, {} {}, {} {}{}'.format(
         diff.years, 'year' + _plural(diff.years),
@@ -47,10 +64,25 @@ def daily_readme(birthday):
 
 
 def _plural(unit):
+    """Return ``"s"`` if *unit* is not ``1``, otherwise ``""``.
+
+    :param int unit: Numeric quantity.
+    :return: Plural suffix or empty string.
+    :rtype: str
+    """
     return 's' if unit != 1 else ''
 
 
 def simple_request(func_name, query, variables):
+    """Send a GraphQL request to the GitHub API and return the response.
+
+    :param str func_name: Caller name used in error messages.
+    :param str query: GraphQL query document.
+    :param dict variables: GraphQL variables.
+    :return: Successful ``requests.Response``.
+    :rtype: requests.Response
+    :raises Exception: If the HTTP status code is not 200.
+    """
     request = requests.post('https://api.github.com/graphql',
                             json={'query': query, 'variables': variables},
                             headers=HEADERS)
@@ -61,6 +93,18 @@ def simple_request(func_name, query, variables):
 
 
 def graph_repos_stars(count_type, owner_affiliation, cursor=None):
+    """Fetch repository count or cumulative stars via the GitHub API.
+
+    Supports pagination via *cursor*.
+
+    :param str count_type: Either ``"repos"`` (repository count) or
+        ``"stars"`` (cumulative stargazer count).
+    :param list owner_affiliation: Repository affiliation filters
+        (e.g. ``["OWNER"]``).
+    :param str cursor: Pagination cursor for the next page.
+    :return: Repository count or total stars across all matched repos.
+    :rtype: int
+    """
     query_count('graph_repos_stars')
     query = '''
     query ($owner_affiliation: [RepositoryAffiliation], $login: String!,
@@ -98,6 +142,22 @@ def graph_repos_stars(count_type, owner_affiliation, cursor=None):
 
 def recursive_loc(owner, repo_name, data, cache_comment, addition_total=0,
                   deletion_total=0, my_commits=0, cursor=None):
+    """Recursively fetch commit history for a single repo, summing additions
+    and deletions across all pages of the default branch.
+
+    :param str owner: Repository owner (user or org).
+    :param str repo_name: Repository name.
+    :param list data: In-memory cache lines for this user.
+    :param list cache_comment: Comment header lines prepended to the cache.
+    :param int addition_total: Running total of added lines.
+    :param int deletion_total: Running total of deleted lines.
+    :param int my_commits: Running count of commits by the authenticated user.
+    :param str cursor: Pagination cursor for the next page of history.
+    :return: Triple ``(additions, deletions, my_commits)`` or ``0`` when the
+        repository has no default branch.
+    :rtype: tuple or int
+    :raises Exception: On HTTP 403 (rate limit) or any other non-200 status.
+    """
     query_count('recursive_loc')
     query = '''
     query ($repo_name: String!, $owner: String!, $cursor: String) {
@@ -154,6 +214,21 @@ def recursive_loc(owner, repo_name, data, cache_comment, addition_total=0,
 
 def _loc_counter_one_repo(owner, repo_name, data, cache_comment, history,
                           addition_total, deletion_total, my_commits):
+    """Accumulate additions and deletions from one page of commit history.
+
+    If the page has more history, recurses via :func:`recursive_loc`.
+
+    :param str owner: Repository owner.
+    :param str repo_name: Repository name.
+    :param list data: In-memory cache lines.
+    :param list cache_comment: Comment header lines.
+    :param dict history: JSON ``history`` node from the GraphQL response.
+    :param int addition_total: Running addition total so far.
+    :param int deletion_total: Running deletion total so far.
+    :param int my_commits: Running commit count so far.
+    :return: Triple ``(additions, deletions, my_commits)``.
+    :rtype: tuple
+    """
     for node in history['edges']:
         if node['node']['author']['user'] is not None:
             my_commits += 1
@@ -169,6 +244,19 @@ def _loc_counter_one_repo(owner, repo_name, data, cache_comment, history,
 
 def loc_query(owner_affiliation, comment_size=0, force_cache=False,
               cursor=None, edges=None):
+    """Paginate through all user repositories and build/update the LOC cache.
+
+    Returns ``[additions, deletions, net_loc, was_cached]``. The net LOC is
+    ``additions - deletions``.
+
+    :param list owner_affiliation: Repository affiliation filters.
+    :param int comment_size: Number of comment header lines in the cache file.
+    :param bool force_cache: If ``True``, force a full cache rebuild.
+    :param str cursor: Pagination cursor.
+    :param list edges: Accumulated repository edges across pages.
+    :return: List ``[additions, deletions, net_loc, was_cached]``.
+    :rtype: list
+    """
     if edges is None:
         edges = []
     query_count('loc_query')
@@ -216,6 +304,19 @@ def loc_query(owner_affiliation, comment_size=0, force_cache=False,
 
 
 def _cache_builder(edges, comment_size, force_cache, loc_add=0, loc_del=0):
+    """Compare current repository edge data with the on-disk cache.
+
+    Creates the cache file if it does not exist. For each repo whose commit
+    count has changed, re-fetches the full loc via :func:`recursive_loc`.
+
+    :param list edges: All repository edges from the GraphQL query.
+    :param int comment_size: Number of comment header lines.
+    :param bool force_cache: Force a full cache flush and rebuild.
+    :param int loc_add: Accumulated additions so far.
+    :param int loc_del: Accumulated deletions so far.
+    :return: ``[total_additions, total_deletions, net_loc, was_cached]``.
+    :rtype: list
+    """
     cached = True
     filename = 'cache/' + hashlib.sha256(
         USER_NAME.encode('utf-8')).hexdigest() + '.txt'
@@ -266,6 +367,14 @@ def _cache_builder(edges, comment_size, force_cache, loc_add=0, loc_del=0):
 
 
 def _flush_cache(edges, filename, comment_size):
+    """Reset cache file entries to zero for repos that will be re-fetched.
+
+    Preserves the comment header block.
+
+    :param list edges: Repository edges to write fresh zero-rows for.
+    :param str filename: Path to the cache file.
+    :param int comment_size: Number of comment header lines to preserve.
+    """
     with open(filename, 'r') as f:
         data = []
         if comment_size > 0:
@@ -279,6 +388,11 @@ def _flush_cache(edges, filename, comment_size):
 
 
 def force_close_file(data, cache_comment):
+    """Write partial cache data to disk on error so progress is not lost.
+
+    :param list data: Cache data lines to save.
+    :param list cache_comment: Comment header lines.
+    """
     filename = 'cache/' + hashlib.sha256(
         USER_NAME.encode('utf-8')).hexdigest() + '.txt'
     with open(filename, 'w') as f:
@@ -289,6 +403,12 @@ def force_close_file(data, cache_comment):
 
 
 def _stars_counter(data):
+    """Sum stargazer counts from a list of repository edges.
+
+    :param list data: Repository edges from a GraphQL response.
+    :return: Total number of stargazers across all repositories.
+    :rtype: int
+    """
     total_stars = 0
     for node in data:
         total_stars += node['node']['stargazers']['totalCount']
@@ -297,6 +417,17 @@ def _stars_counter(data):
 
 def svg_overwrite(filename, age_data, commit_data, star_data, repo_data,
                   contrib_data, follower_data, loc_data):
+    """Parse an SVG file and replace placeholder values with live stats.
+
+    :param str filename: Path to the SVG file to update.
+    :param str age_data: Human-readable age string.
+    :param int commit_data: Total commit count.
+    :param int star_data: Total stargazer count.
+    :param int repo_data: Owned repository count.
+    :param int contrib_data: Contributed repository count.
+    :param int follower_data: Follower count.
+    :param list loc_data: ``[additions, deletions, net_loc]``.
+    """
     tree = etree.parse(filename)
     root = tree.getroot()
     _justify_format(root, 'age_data', age_data, 35)
@@ -312,6 +443,17 @@ def svg_overwrite(filename, age_data, commit_data, star_data, repo_data,
 
 
 def _justify_format(root, element_id, new_text, length=0):
+    """Set the text of an SVG element and pad with dots for monospace alignment.
+
+    Finds the SVG element by ``id`` and replaces its text. Also updates the
+    companion ``<element_id>_dots`` element with right-alignment padding.
+
+    :param lxml.etree.Element root: Root of the SVG XML tree.
+    :param str element_id: ``id`` attribute of the target ``<tspan>``.
+    :param new_text: Text to set (int or str).
+    :type new_text: int or str
+    :param int length: Desired character width for right-alignment padding.
+    """
     if isinstance(new_text, int):
         new_text = f"{'{:,}'.format(new_text)}"
     new_text = str(new_text)
@@ -326,12 +468,24 @@ def _justify_format(root, element_id, new_text, length=0):
 
 
 def _find_and_replace(root, element_id, new_text):
+    """Replace the text of an SVG element identified by its ``id`` attribute.
+
+    :param lxml.etree.Element root: Root of the SVG XML tree.
+    :param str element_id: ``id`` attribute of the target element.
+    :param str new_text: Replacement text.
+    """
     element = root.find(f".//*[@id='{element_id}']")
     if element is not None:
         element.text = new_text
 
 
 def commit_counter(comment_size):
+    """Sum the third column (my_commits) from every row in the cache file.
+
+    :param int comment_size: Number of comment header lines to skip.
+    :return: Total commit count across all cached repositories.
+    :rtype: int
+    """
     total_commits = 0
     filename = 'cache/' + hashlib.sha256(
         USER_NAME.encode('utf-8')).hexdigest() + '.txt'
@@ -344,6 +498,12 @@ def commit_counter(comment_size):
 
 
 def user_getter(username):
+    """Fetch a user's GitHub database ID and account creation date.
+
+    :param str username: GitHub username.
+    :return: Tuple ``({id: ...}, created_at_iso_string)``.
+    :rtype: tuple
+    """
     query_count('user_getter')
     query = '''
     query($login: String!){
@@ -359,6 +519,12 @@ def user_getter(username):
 
 
 def follower_getter(username):
+    """Fetch the total follower count for a GitHub user.
+
+    :param str username: GitHub username.
+    :return: Number of followers.
+    :rtype: int
+    """
     query_count('follower_getter')
     query = '''
     query($login: String!){
@@ -374,17 +540,39 @@ def follower_getter(username):
 
 
 def query_count(funct_id):
+    """Increment the global API call counter for the given function category.
+
+    :param str funct_id: Key in ``QUERY_COUNT`` to increment.
+    """
     global QUERY_COUNT
     QUERY_COUNT[funct_id] += 1
 
 
 def perf_counter(funct, *args):
+    """Call *funct* with *args* and return the result and elapsed wall time.
+
+    :param callable funct: Function to time.
+    :param args: Positional arguments forwarded to *funct*.
+    :return: Tuple ``(function_return_value, elapsed_seconds)``.
+    :rtype: tuple
+    """
     start = time.perf_counter()
     funct_return = funct(*args)
     return funct_return, time.perf_counter() - start
 
 
 def formatter(query_type, difference, funct_return=False, whitespace=0):
+    """Print a formatted timing line to stdout.
+
+    Displays the duration in seconds (if >= 1 s) or milliseconds.
+
+    :param str query_type: Label for the timing line (e.g. ``"stars"``).
+    :param float difference: Elapsed time in seconds.
+    :param funct_return: Value to return after printing.
+    :param int whitespace: If > 0, return *funct_return* formatted and
+        padded to this field width.
+    :return: Formatted string (if *whitespace* > 0) otherwise *funct_return*.
+    """
     print('{:<23}'.format('   ' + query_type + ':'), sep='', end='')
     if difference > 1:
         print('{:>12}'.format('%.4f' % difference + ' s '))
@@ -396,12 +584,34 @@ def formatter(query_type, difference, funct_return=False, whitespace=0):
 
 
 def _load_ascii():
+    """Read the ASCII art file and return its lines.
+
+    :return: List of text lines (trailing newlines stripped).
+    :rtype: list
+    """
     with open(ASCII_FILE) as f:
         return f.read().rstrip("\n").split("\n")
 
 
 def _build_svg(ascii_lines, bg, fg, key_color, value_color, neutral_color,
                add_color, del_color):
+    """Build a complete SVG document with ASCII art and stats layout.
+
+    Generates both an art panel (left) and an info panel (right) in a single
+    SVG. The info panel contains hardcoded entry definitions; dynamic values
+    are injected later by :func:`svg_overwrite`.
+
+    :param list ascii_lines: ASCII art lines to render in the left panel.
+    :param str bg: SVG background color (hex).
+    :param str fg: Default text fill color (hex).
+    :param str key_color: Fill color for stat labels.
+    :param str value_color: Fill color for stat values.
+    :param str neutral_color: Fill color for dot padding.
+    :param str add_color: Fill color for LOC additions.
+    :param str del_color: Fill color for LOC deletions.
+    :return: Complete SVG document as a string.
+    :rtype: str
+    """
     art_y_start = 40
     art_line_height = 20
     art_font_size = 12
@@ -410,9 +620,9 @@ def _build_svg(ascii_lines, bg, fg, key_color, value_color, neutral_color,
     max_art_chars = max((len(line.rstrip()) for line in ascii_lines), default=0)
     char_width_ratio = 0.6
     art_pixel_width = int(max_art_chars * art_font_size * char_width_ratio)
-    min_info_x = 740
+    min_info_x = 490
     art_right_edge = art_x_padding + art_pixel_width
-    info_x = max(min_info_x, art_right_edge + 60)
+    info_x = max(min_info_x, art_right_edge + 10)
     info_content_width = 420
     svg_width = max(SVG_WIDTH, info_x + info_content_width)
 
@@ -437,13 +647,13 @@ def _build_svg(ascii_lines, bg, fg, key_color, value_color, neutral_color,
         ("title", "mochapulse@github", ""),
         ("uptime", "Uptime", ""),
         ("kv", "OS", "WSL, Linux(Debian, popOS, ArchLinux)"),
-        ("kv", "Shell", "zsh, oh my zsh"),
-        ("kv", "Terminal", "Kitty or Windows Terminal"),
-        ("kv", "Editor", "VsCode"),
+        ("kv", "Shell", "zsh, oh my zsh, bash, powershell"),
+        ("kv", "Terminal", "Kitty, Windows Terminal"),
+        ("kv", "Editor", "VsCode, Nano, Nvim"),
         ("kv", "Languages", "Python, C, C++, Node(TS or JS), Vite/React"),
-        ("kv", "CI/CD",
-         "GH Actions, Docker, Embedded Systems (ESP32, RPI, Jetson Nano)"),
-        ("kv", "Tools", "Agents coding (Skills, Local LLMs)"),
+        ("kv", "CI/CD", "GH Actions, Docker"),
+        ("kv", "", "Embedded Systems (ESP32, RPI, Jetson Nano)"),
+        ("kv", "Tools", "AI Agents coding SDD(Skills, Local LLMs, MCP, Plugins)"),
         ("blank", "", ""),
         ("blank", "", ""),
         ("sep", "Repository", ""),
@@ -452,6 +662,8 @@ def _build_svg(ascii_lines, bg, fg, key_color, value_color, neutral_color,
         ("blank", "", ""),
         ("sep", "Contact", ""),
         ("kv", "GitHub", "github.com/mochapulse"),
+        ("kv", "Gmail", "mochapulse@gmail.com"),
+        ("kv", "LinkedIn", "linkedin.com/in/david-ramirez-betancourth-b5ba80279"),
         ("blank", "", ""),
         ("sep", "GitHub Stats", ""),
         ("stats_repos", "", ""),
@@ -571,6 +783,11 @@ def _build_svg(ascii_lines, bg, fg, key_color, value_color, neutral_color,
 
 
 def main():
+    """Entry point: load ASCII art, build SVGs, query GitHub, update stats.
+
+    When ``ACCESS_TOKEN`` is not available, SVGs are written with all stats
+    set to zero and the script exits early.
+    """
     print('Calculation times:')
 
     ascii_lines = _load_ascii()
