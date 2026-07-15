@@ -1,0 +1,3 @@
+[submodule ".agents/skills/ascii-art"]
+	path = .agents/skills/ascii-art
+	url = https://github.com/neethanwu/ascii-art.git
