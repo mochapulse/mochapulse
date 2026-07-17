@@ -54,7 +54,7 @@
 </text>
 <text fill="#24292f">
       <tspan x="490" y="40">mochapulse@github ————————————————————————————————————————</tspan>
-      <tspan x="490" y="68"><tspan class="key">Uptime</tspan><tspan class="cc" id="age_data_dots"> ........ </tspan><tspan class="value" id="age_data">25 years, 0 months, 18 days</tspan></tspan>
+      <tspan x="490" y="68"><tspan class="key">Uptime</tspan><tspan class="cc" id="age_data_dots"> ........ </tspan><tspan class="value" id="age_data">25 years, 0 months, 19 days</tspan></tspan>
       <tspan x="490" y="96"><tspan class="key">OS</tspan><tspan class="cc">.... </tspan><tspan class="value">WSL, Linux(Debian, popOS, ArchLinux)</tspan></tspan>
       <tspan x="490" y="124"><tspan class="key">Shell</tspan><tspan class="cc">.... </tspan><tspan class="value">zsh, oh my zsh, bash, powershell</tspan></tspan>
       <tspan x="490" y="152"><tspan class="key">Terminal</tspan><tspan class="cc">.... </tspan><tspan class="value">Kitty, Windows Terminal</tspan></tspan>
