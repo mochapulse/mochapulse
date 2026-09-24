@@ -1,0 +1,74 @@
+{
+  "header": {
+    "about": "About",
+    "experience": "Experience",
+    "projects": "Projects",
+    "skills": "Skills",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "mochapulse",
+    "subtitle": "Homelab & Embedded Systems Builder",
+    "location": "Manizales, Colombia",
+    "learnMore": "Learn more"
+  },
+  "about": {
+    "title": "About",
+    "profile": "Profile",
+    "summary": "Personal engineering account for self-hosted infrastructure, embedded firmware, and local AI. I build 24/7 server daemons and telemetry APIs, ESP32 and SDR sensor nodes, personal cloud storage, and on-device LLM tooling — end-to-end systems that run a homelab from bare metal to dashboard.",
+    "education": "Education",
+    "msc": "MSc in Industrial Automation",
+    "bsc": "BS in Electronic Engineering",
+    "institution": "National University of Colombia",
+    "mscPeriod": "Jan 2026 - Present",
+    "bscPeriod": "Jul 2022 - Jun 2026",
+    "mscDetails": "Research Areas: Artificial Intelligence, Machine Learning applied to RF, Computational Structures, and Optimization",
+    "bscDetails1": "Cumulative GPA: 4.2/5.0",
+    "bscDetails2": "Focus Areas: Digital Signal Processing (DSP), Software Defined Radio (SDR), Hardware Design, and IoT Systems",
+    "accountsTitle": "GitHub Accounts",
+    "accountsIntro": "Two accounts, two contexts — the same engineer behind both.",
+    "accountsMochaRole": "Professional · Freelance",
+    "accountsMochaDesc": "Personal and client work: homelab infrastructure, embedded systems, self-hosted services, and product builds.",
+    "accountsEduRole": "Educational · Research & Science",
+    "accountsEduDesc": "Academic and scientific work at the National University of Colombia: RF, DSP, SDR, and machine-learning research."
+  },
+  "experience": {
+    "title": "Experience",
+    "gcpds": "Researcher and Developer",
+    "gcpdsCompany": "GCPDS Research Group",
+    "gcpdsPeriod": "Oct 2024 - Present",
+    "gcpdsLocation": "Manizales, Colombia",
+    "gcpdsHighlight1": "C/Python firmware development for an IoT spectral monitoring sensor based on HackRF SDR on Raspberry Pi 5, with hybrid architecture (C for real-time IQ acquisition, Python for orchestration), autonomous PPM calibration, and WebRTC streaming",
+    "gcpdsHighlight2": "Backend platform implementation with REST API (FastAPI), TimescaleDB time-series database, and real-time spectral visualization dashboard",
+    "gcpdsHighlight3": "Mobile application development for deployment and validation of Image Segmentation models",
+    "teaching": "Undergraduate Fellow",
+    "teachingCompany": "National University of Colombia",
+    "teachingPeriod": "2024",
+    "teachingLocation": "Manizales, Colombia",
+    "teachingHighlight1": "Academic teaching assistant for Signals and Systems and Machine Learning Theory, advising groups of 30+ students",
+    "teachingHighlight2": "Design and instruction of hands-on Python workshops for signal analysis and processing, integrating NumPy, SciPy, and Matplotlib"
+  },
+  "projects": {
+    "title": "Featured Projects",
+    "viewAll": "View All Repositories"
+  },
+  "skills": {
+    "title": "Technical Skills",
+    "languages": "Languages",
+    "frameworks": "Frameworks & Platforms",
+    "infrastructure": "Infrastructure & Tools",
+    "spokenLanguages": "Languages"
+  },
+  "contact": {
+    "title": "Get In Touch",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "sendEmail": "Send Email",
+    "linkedin": "LinkedIn",
+    "github": "GitHub"
+  },
+  "footer": {
+    "copyright": "All rights reserved."
+  }
+}

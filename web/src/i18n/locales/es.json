@@ -1,0 +1,74 @@
+{
+  "header": {
+    "about": "Sobre Mí",
+    "experience": "Experiencia",
+    "projects": "Proyectos",
+    "skills": "Habilidades",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "title": "mochapulse",
+    "subtitle": "Constructor de Sistemas Embebidos y Homelab",
+    "location": "Manizales, Colombia",
+    "learnMore": "Conoce más"
+  },
+  "about": {
+    "title": "Sobre Mí",
+    "profile": "Perfil",
+    "summary": "Cuenta personal de ingeniería para infraestructura autoalojada, firmware embebido e IA local. Construyo demonios de servidor 24/7 y APIs de telemetría, nodos sensores ESP32 y SDR, almacenamiento personal en la nube y herramientas de LLM en dispositivo — sistemas completos que hacen funcionar un homelab desde el hardware hasta el dashboard.",
+    "education": "Educación",
+    "msc": "Maestría en Automatización Industrial",
+    "bsc": "Ingeniería Electrónica",
+    "institution": "Universidad Nacional de Colombia",
+    "mscPeriod": "Ene 2026 - Presente",
+    "bscPeriod": "Jul 2022 - Jun 2026",
+    "mscDetails": "Áreas de Investigación: Inteligencia Artificial, Aprendizaje de Máquina aplicado a RF, Estructuras Computacionales y Optimización",
+    "bscDetails1": "Promedio Acumulado: 4.2/5.0",
+    "bscDetails2": "Áreas de Enfoque: Procesamiento Digital de Señales (DSP), Radio Definida por Software (SDR), Diseño de Hardware y Sistemas IoT",
+    "accountsTitle": "Cuentas de GitHub",
+    "accountsIntro": "Dos cuentas, dos contextos — el mismo ingeniero detrás de ambas.",
+    "accountsMochaRole": "Profesional · Freelance",
+    "accountsMochaDesc": "Trabajo personal y de clientes: infraestructura homelab, sistemas embebidos, servicios autoalojados y desarrollo de productos.",
+    "accountsEduRole": "Educativo · Investigación y Ciencia",
+    "accountsEduDesc": "Trabajo académico y científico en la Universidad Nacional de Colombia: investigación en RF, DSP, SDR y aprendizaje de máquina."
+  },
+  "experience": {
+    "title": "Experiencia",
+    "gcpds": "Investigador y Desarrollador",
+    "gcpdsCompany": "Grupo de Investigación GCPDS",
+    "gcpdsPeriod": "Oct 2024 - Actualidad",
+    "gcpdsLocation": "Manizales, Colombia",
+    "gcpdsHighlight1": "Desarrollo de firmware C/Python para sensor IoT de monitoreo espectral basado en HackRF SDR sobre Raspberry Pi 5, con arquitectura híbrida (C para adquisición IQ en tiempo real, Python para orquestación), calibración autónoma de PPM y streaming WebRTC",
+    "gcpdsHighlight2": "Implementación de plataforma backend con API REST (FastAPI), base de datos TimescaleDB para series temporales y dashboard de visualización espectral en tiempo real",
+    "gcpdsHighlight3": "Desarrollo de aplicación móvil para despliegue y validación de modelos de Segmentación de Imágenes",
+    "teaching": "Becario de Pregrado",
+    "teachingCompany": "Universidad Nacional de Colombia",
+    "teachingPeriod": "2024",
+    "teachingLocation": "Manizales, Colombia",
+    "teachingHighlight1": "Monitor académico de Señales y Sistemas y Teoría de Aprendizaje de Máquina, asesorando a grupos de 30+ estudiantes en componentes teórico-prácticos",
+    "teachingHighlight2": "Diseño e instrucción de talleres prácticos en Python para análisis y procesamiento de señales, integrando herramientas como NumPy, SciPy y Matplotlib"
+  },
+  "projects": {
+    "title": "Proyectos Destacados",
+    "viewAll": "Ver Todos los Repositorios"
+  },
+  "skills": {
+    "title": "Habilidades Técnicas",
+    "languages": "Lenguajes",
+    "frameworks": "Frameworks y Plataformas",
+    "infrastructure": "Infraestructura y Herramientas",
+    "spokenLanguages": "Idiomas"
+  },
+  "contact": {
+    "title": "Contacto",
+    "email": "Correo",
+    "phone": "Teléfono",
+    "location": "Ubicación",
+    "sendEmail": "Enviar Correo",
+    "linkedin": "LinkedIn",
+    "github": "GitHub"
+  },
+  "footer": {
+    "copyright": "Todos los derechos reservados."
+  }
+}
