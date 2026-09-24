@@ -497,6 +497,46 @@ def commit_counter(comment_size):
     return total_commits
 
 
+def _cached_loc_data(comment_size):
+    """Return last cached LOC totals without contacting the GitHub API.
+
+    Sums the fourth column (additions) and fifth column (deletions) across
+    every cached repository so previously computed stats can be reused when
+    the API is unavailable, instead of resetting the SVG to zero.
+
+    :param int comment_size: Number of comment header lines to skip.
+    :return: List ``[additions, deletions, net_loc]``.
+    :rtype: list
+    """
+    filename = 'cache/' + hashlib.sha256(
+        USER_NAME.encode('utf-8')).hexdigest() + '.txt'
+    additions = deletions = 0
+    try:
+        with open(filename, 'r') as f:
+            data = f.readlines()[comment_size:]
+    except FileNotFoundError:
+        return [0, 0, 0]
+    for line in data:
+        parts = line.split()
+        if len(parts) >= 5:
+            additions += int(parts[3])
+            deletions += int(parts[4])
+    return [additions, deletions, additions - deletions]
+
+
+def _cached_commit_data(comment_size):
+    """Return the cached commit total, or ``0`` when the cache is unavailable.
+
+    :param int comment_size: Number of comment header lines to skip.
+    :return: Total cached commit count.
+    :rtype: int
+    """
+    try:
+        return commit_counter(comment_size)
+    except (FileNotFoundError, IndexError, ValueError):
+        return 0
+
+
 def user_getter(username):
     """Fetch a user's GitHub database ID and account creation date.
 
@@ -810,11 +850,18 @@ def main():
 
     if not HAS_TOKEN:
         print('\n** No ACCESS_TOKEN configured. Skipping GitHub API queries. **')
-        print('** Set ACCESS_TOKEN and USER_NAME secrets in repo settings. **\n')
+        print('** Set ACCESS_TOKEN and USER_NAME secrets in repo settings. **')
+        print('** Falling back to last cached LOC/commit stats. **\n')
+        loc_fallback = _cached_loc_data(7)
+        commit_fallback = _cached_commit_data(7)
         svg_overwrite(os.path.join(SCRIPT_DIR, 'dark_mode.svg'),
-                      age_data, 0, 0, 0, 0, 0, [0, 0, 0])
+                      age_data, commit_fallback, 0, 0, 0, 0, loc_fallback)
         svg_overwrite(os.path.join(SCRIPT_DIR, 'light_mode.svg'),
-                      age_data, 0, 0, 0, 0, 0, [0, 0, 0])
+                      age_data, commit_fallback, 0, 0, 0, 0, loc_fallback)
+        if os.environ.get('GITHUB_ACTIONS') == 'true':
+            print('** Missing ACCESS_TOKEN in CI: failing the job so degraded '
+                  'stats are not committed. **')
+            sys.exit(1)
         return
 
     try:
@@ -866,11 +913,15 @@ def main():
                   '{:>6}'.format(count))
     except Exception as e:
         print(f'\n** GitHub API error: {e} **')
-        print('** SVG generated with placeholder stats. **\n')
+        print('** Falling back to last cached LOC/commit stats; failing the '
+              'job so the zeroed SVG is not committed. **\n')
+        loc_fallback = _cached_loc_data(7)
+        commit_fallback = _cached_commit_data(7)
         svg_overwrite(os.path.join(SCRIPT_DIR, 'dark_mode.svg'),
-                      age_data, 0, 0, 0, 0, 0, [0, 0, 0])
+                      age_data, commit_fallback, 0, 0, 0, 0, loc_fallback)
         svg_overwrite(os.path.join(SCRIPT_DIR, 'light_mode.svg'),
-                      age_data, 0, 0, 0, 0, 0, [0, 0, 0])
+                      age_data, commit_fallback, 0, 0, 0, 0, loc_fallback)
+        sys.exit(1)
 
 
 if __name__ == '__main__':
