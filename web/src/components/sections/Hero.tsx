@@ -1,6 +1,7 @@
 import { ArrowDown, Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { personalInfo } from "@/data/cv-data";
 
 export function Hero() {
@@ -10,6 +11,15 @@ export function Hero() {
     <section className="relative min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-palette-1/20">
       <div className="container mx-auto px-4 md:px-8 py-20">
         <div className="max-w-3xl mx-auto text-center space-y-6">
+          <div className="flex justify-center">
+            <Avatar className="size-28 md:size-32 ring-2 ring-primary/30 shadow-lg">
+              <AvatarImage
+                src="https://github.com/mochapulse.png?size=256"
+                alt="mochapulse GitHub avatar"
+              />
+              <AvatarFallback>MP</AvatarFallback>
+            </Avatar>
+          </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
             {t("hero.title")}
           </h1>

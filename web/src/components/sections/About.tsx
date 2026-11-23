@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, ExternalLink, Globe } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { personalInfo } from "@/data/cv-data";
 
 const GitHubIcon = ({ className }: { className?: string }) => (
@@ -111,7 +112,16 @@ export function About() {
                   >
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-2 font-semibold">
-                        <GitHubIcon className="size-4" />@{acc.handle}
+                        <Avatar className="size-6">
+                          <AvatarImage
+                            src={`https://github.com/${acc.handle}.png?size=80`}
+                            alt={`${acc.handle} GitHub avatar`}
+                          />
+                          <AvatarFallback>
+                            {acc.handle.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        @{acc.handle}
                       </span>
                       <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                         {t("about.accountsCurrent")}
@@ -134,7 +144,16 @@ export function About() {
                   >
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-2 font-semibold">
-                        <GitHubIcon className="size-4" />@{acc.handle}
+                        <Avatar className="size-6">
+                          <AvatarImage
+                            src={`https://github.com/${acc.handle}.png?size=80`}
+                            alt={`${acc.handle} GitHub avatar`}
+                          />
+                          <AvatarFallback>
+                            {acc.handle.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        @{acc.handle}
                       </span>
                       <Globe className="size-4 text-muted-foreground transition-colors group-hover:text-primary" />
                     </div>
