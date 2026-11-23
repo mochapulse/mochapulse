@@ -7,6 +7,7 @@ export const personalInfo = {
   linkedin: "https://linkedin.com/in/david-ramirez-betancourth-b5ba80279",
   github: "https://github.com/mochapulse",
   githubEdu: "https://github.com/dramirezbe",
+  siteEdu: "https://dramirezbe.github.io/dramirezbe/",
   summary:
     "Personal engineering account for self-hosted infrastructure, embedded firmware, and local AI. I build 24/7 server daemons and telemetry APIs, ESP32 and SDR sensor nodes, personal cloud storage, and on-device LLM tooling — end-to-end systems that run a homelab from bare metal to dashboard.",
 };

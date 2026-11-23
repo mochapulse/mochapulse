@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, ExternalLink } from "lucide-react";
+import { GraduationCap, ExternalLink, Globe } from "lucide-react";
 import { personalInfo } from "@/data/cv-data";
 
 const GitHubIcon = ({ className }: { className?: string }) => (
@@ -18,12 +18,14 @@ export function About() {
       url: personalInfo.github,
       role: t("about.accountsMochaRole"),
       desc: t("about.accountsMochaDesc"),
+      current: true,
     },
     {
       handle: "dramirezbe",
-      url: personalInfo.githubEdu,
+      url: personalInfo.siteEdu,
       role: t("about.accountsEduRole"),
       desc: t("about.accountsEduDesc"),
+      current: false,
     },
   ];
 
@@ -101,28 +103,54 @@ export function About() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-2">
-              {accounts.map((acc) => (
-                <a
-                  key={acc.handle}
-                  href={acc.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group rounded-lg border p-4 transition-colors hover:border-primary hover:bg-muted/50"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-2 font-semibold">
-                      <GitHubIcon className="size-4" />@{acc.handle}
-                    </span>
-                    <ExternalLink className="size-4 text-muted-foreground transition-colors group-hover:text-primary" />
+              {accounts.map((acc) =>
+                acc.current ? (
+                  <div
+                    key={acc.handle}
+                    className="rounded-lg border border-primary/40 bg-muted/30 p-4"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-2 font-semibold">
+                        <GitHubIcon className="size-4" />@{acc.handle}
+                      </span>
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                        {t("about.accountsCurrent")}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm font-medium text-primary">
+                      {acc.role}
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {acc.desc}
+                    </p>
                   </div>
-                  <p className="mt-2 text-sm font-medium text-primary">
-                    {acc.role}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {acc.desc}
-                  </p>
-                </a>
-              ))}
+                ) : (
+                  <a
+                    key={acc.handle}
+                    href={acc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group rounded-lg border p-4 transition-colors hover:border-primary hover:bg-muted/50"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-2 font-semibold">
+                        <GitHubIcon className="size-4" />@{acc.handle}
+                      </span>
+                      <Globe className="size-4 text-muted-foreground transition-colors group-hover:text-primary" />
+                    </div>
+                    <p className="mt-2 text-sm font-medium text-primary">
+                      {acc.role}
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {acc.desc}
+                    </p>
+                    <p className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors group-hover:text-primary">
+                      {t("about.accountsVisit")}
+                      <ExternalLink className="size-3" />
+                    </p>
+                  </a>
+                )
+              )}
             </div>
           </CardContent>
         </Card>

@@ -44,6 +44,9 @@ export function Projects() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col gap-4">
+                <Badge variant="outline" className="w-fit text-xs font-normal text-muted-foreground">
+                  {project.commits} commits
+                </Badge>
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   {project.description}
                 </p>
