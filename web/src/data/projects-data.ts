@@ -50,17 +50,6 @@ export const projects: Project[] = [
     account: "mochapulse",
   },
   {
-    title: "LocalLLMTestingUsingLlamaCpp",
-    description:
-      "Experiments running and benchmarking local LLM inference on-device with llama.cpp.",
-    technologies: ["C", "llama.cpp", "LLMs", "On-device AI"],
-    repoUrl: "https://github.com/mochapulse/LocalLLMTestingUsingLlamaCpp",
-    public: true,
-    commits: 2,
-    category: "ai",
-    account: "mochapulse",
-  },
-  {
     title: "KyubeyV1-telegram-bot",
     description:
       "A conversational Telegram bot modeled as an AI agent — user → conversation → options → decision → action — coordinating permissions, tools, and external actions over a chat channel.",
